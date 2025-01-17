@@ -92,6 +92,7 @@ const Marketplace: React.FC = () => {
       return;
     }
 
+
     try {
       const response = await axios.post(
         `https://tradexchange-7rcv.onrender.com/asset/buy/${asset._id}`,
