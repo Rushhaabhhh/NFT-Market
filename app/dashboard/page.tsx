@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, WalletIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link  from 'next/link';
+import { useRouter } from 'next/navigation';
+
 
 // Types
 interface FAQ {
@@ -37,6 +39,41 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
 };
 
 const Home: React.FC = () => {
+  const [account, setAccount] = useState<string | null>(null);
+  const router = useRouter();
+
+  // Check if the user is already connected to MetaMask on component mount
+  useEffect(() => {
+    const storedAccount = localStorage.getItem('walletAddress');
+    if (storedAccount) {
+      setAccount(storedAccount);
+      router.push('/marketplace'); // Redirect if account is found
+    }
+  }, [router]);
+
+  // Connect MetaMask or any Ethereum wallet
+  const connectMetaMask = async (): Promise<void> => {
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+        const userAccount = accounts[0];
+        setAccount(userAccount);
+        console.log('Connected to MetaMask:', userAccount);
+        localStorage.setItem('walletAddress', userAccount);
+
+        // Navigate to the marketplace page after successful connection
+        router.push('/marketplace');
+      } catch (error) {
+        console.error('Error connecting to MetaMask:', error);
+      }
+    } else {
+      alert('MetaMask not found. Please install MetaMask to connect.');
+    }
+  };
+
+
   const faqs: FAQ[] = [
     {
       question: "What is TradeXchange?",
@@ -81,30 +118,30 @@ const Home: React.FC = () => {
           <Image src="/logo.png" alt="Logo" width={56} height={56} className="mr-2" />
           <span className="text-4xl font-bold">Crypto Bazaar</span>
         </div>
-        <div className="flex space-x-4 text-xl cursor-pointer">
-          <Link href="Home" className="text-white hover:text-green-400 transition-colors">
-            Home
-          </Link>
-          <Link href="Marketplace" className="text-white hover:text-green-400 transition-colors">
-            Marketplace
-          </Link>
-          <Link href="FAQ" className="text-white hover:text-green-400 transition-colors">
-            FAQ
-          </Link>
-          <Link href="Contact" className="text-white hover:text-green-400 transition-colors">
-            Contact
-          </Link>
-        </div>
 
-        <div>
+          <div className="flex space-x-10 text-xl cursor-pointer justify-center flex-grow">
+            <Link href="#Home" className="text-white hover:text-green-400 transition-colors">
+              Home
+            </Link>
+            <Link href="#Marketplace" className="text-white hover:text-green-400 transition-colors">
+              Marketplace
+            </Link>
+            <Link href="#FAQ" className="text-white hover:text-green-400 transition-colors">
+              FAQ
+            </Link>
+            <Link href="#Contact" className="text-white hover:text-green-400 transition-colors">
+              Contact
+            </Link>
+          </div>
+
+        <div className='flex items-center space-x-4 mr-20'>
               <button
-                // onClick={connectMetaMask}
+                onClick={connectMetaMask}
                 className="w-full bg-orange-500 p-2 rounded-xl text-white flex items-center justify-center"
               >
                 <WalletIcon className="mr-2" /> Connect Wallet
               </button>
-            </div>
-
+          </div>
       </nav>
 
       {/* Main Content */}
@@ -199,28 +236,28 @@ const Home: React.FC = () => {
           <div className="col-span-1">
             <h3 className="text-2xl font-bold mb-4">Buy Crypto</h3>
             <ul className="space-y-2 text-gray-400">
-              <li>Exchanges</li>
-              <li>Watchlist</li>
-              <li>Portfolio</li>
-              <li>NFT</li>
+              <li className="hover:text-slate-200 cursor-pointer">Exchanges</li>
+              <li className="hover:text-slate-200 cursor-pointer">Watchlist</li>
+              <li className="hover:text-slate-200 cursor-pointer">Portfolio</li>
+              <li className="hover:text-slate-200 cursor-pointer">NFT</li>
             </ul>
           </div>
           <div className="col-span-1">
             <h3 className="text-2xl font-bold mb-4">Product</h3>
             <ul className="space-y-2 text-gray-400">
-              <li>About Us</li>
-              <li>Careers</li>
-              <li>Blog</li>
-              <li>Security</li>
+              <li className="hover:text-slate-200 cursor-pointer">About Us</li>
+              <li className="hover:text-slate-200 cursor-pointer">Careers</li>
+              <li className="hover:text-slate-200 cursor-pointer">Blog</li>
+              <li className="hover:text-slate-200 cursor-pointer">Security</li>
             </ul>
           </div>
           <div className="col-span-1">
             <h3 className="text-2xl font-bold mb-4">Help Center</h3>
             <ul className="space-y-2 text-gray-400">
-              <li>Contact Us</li>
-              <li>System Status</li>
-              <li>Area of Availability</li>
-              <li>Privacy Policy</li>
+              <li className="hover:text-slate-200 cursor-pointer">Contact Us</li>
+              <li className="hover:text-slate-200 cursor-pointer">System Status</li>
+              <li className="hover:text-slate-200 cursor-pointer">Area of Availability</li>
+              <li className="hover:text-slate-200 cursor-pointer">Privacy Policy</li>
             </ul>
           </div>
           <div className="col-span-1">

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import Web3 from 'web3';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import logo from "../../public/logo.png";

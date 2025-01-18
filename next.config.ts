@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  experimental: {
+    // @ts-ignore - bypass typing error for appDir
+    appDir: true,
+  },
 };
 
 export default nextConfig;
