@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import logo from "../../public/logo.png";
@@ -20,21 +20,16 @@ const Navbar: React.FC = () => {
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
   const [account, setAccount] = useState<string | null>(null);
 
-  // Connect MetaMask or any Ethereum wallet
-  const connectMetaMask = async (): Promise<void> => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        setAccount(accounts[0]);
-        console.log('Connected to MetaMask:', accounts[0]);
-        localStorage.setItem('walletAddress', accounts[0]);
-      } catch (error) {
-        console.error('Error connecting to MetaMask:', error);
-      }
-    } else {
-      alert('MetaMask not found. Please install MetaMask to connect.');
+  // Retrieve MetaMask account from localStorage on mount
+  useEffect(() => {
+    const storedAccount = localStorage.getItem('walletAddress');
+    if (storedAccount) {
+      setAccount(storedAccount);
     }
-  };
+  }, []);
+
+
+
 
   const handleLogout = async (): Promise<void> => {
     try {
@@ -79,10 +74,9 @@ const Navbar: React.FC = () => {
         <div className="flex items-center space-x-4 mr-24">
           <div>
             <button
-              onClick={connectMetaMask}
               className="bg-gradient-to-r from-orange-400 to-orange-500 px-3 py-2 rounded-full text-white flex items-center justify-center shadow-lg hover:bg-orange-600 transition-all"
             >
-              <WalletIcon className="mr-2" /> {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connect'}
+              <WalletIcon className="mr-2" /> {account ? `${account.slice(0, 6)}` : 'Connect Wallet'}
             </button>
           </div>
 
